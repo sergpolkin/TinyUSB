@@ -1544,7 +1544,7 @@ class UsbFsTx(Module):
             pkt_active.eq(1),
             shift_eop.eq(1),
 
-            If(i_bit_strobe,
+            If(i_bit_strobe & ~bitstuff_stall,
                 NextState("EOP_1")
             )
         )
@@ -1594,7 +1594,7 @@ class UsbFsTx(Module):
                 mux_stuff_data.eq(crc16_shifter.o_data),
 
             ).Elif(shift_eop,
-                mux_stuff_se0.eq(1),
+                mux_stuff_se0.eq(Mux(bitstuff_stall, 0, 1)),
                 mux_stuff_data.eq(0),
             )
         ]
